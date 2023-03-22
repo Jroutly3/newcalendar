@@ -1,32 +1,75 @@
-import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, CalendarList } from 'react-native-calendars';
 import dateFns from 'date-fns';
 
-
-
 const format = (date = new Date()) => dateFns.format(date, 'YYYY-MM-DD');
+const getMarkedDates = (baseDate, appointments) => {
+  const markedDates = {};
 
-export default function App() {
-  const baseDate = new Date(2022, 3, 16); //Will change to get date soon
+  markedDates[baseDate] = { selected: true };
+
+  appointments.forEach((appointment) => {
+    const formattedDate = new Date(appointment.date);
+    markedDates[formattedDate] = {
+      ...markedDates[formattedDate],
+      marked: true,
+    };
+  });
+
+  return markedDates;
+};
+
+export default () => {
+  const baseDate = new Date(2023, 2, 22);
+  const APPOINTMENTS = [
+    {
+      date: '2023-03-13T05:00:00.000Z',
+      title: "It's a past thing!",
+    },
+    {
+      date: '2023-03-22T05:00:00.000Z',
+      title: "It's a today thing!",
+    },
+    {
+      date: '2023-04-15T05:00:00.000Z',
+      title: "It's a future thing!",
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <Calendar
+        current={baseDate}
         onDayPress={(day) => {
           console.log('selected day', day);
         }}
-        current={format(baseDate)}
-        minDate={dateFns.subYears(baseDate, 1)}
+        markedDates={getMarkedDates(baseDate, APPOINTMENTS)}
+        theme={{
+          calendarBackground: '#166088',
+
+          selectedDayBackgroundColor: '#C0D6DF',
+          selectedDayTextColor: '#166088',
+          selectedDotColor: '#166088',
+
+          dayTextColor: '#DBE9EE',
+          textDisabledColor: '#729DAF',
+          dotColor: '#DBE9EE',
+
+          monthTextColor: '#DBE9EE',
+          textMonthFontWeight: 'bold',
+
+          arrowColor: '#DBE9EE',
+        }}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: '#166088',
     justifyContent: 'center',
   },
 });
