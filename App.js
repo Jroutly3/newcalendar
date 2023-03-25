@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Calendar, CalendarList } from 'react-native-calendars';
 import dateFns from 'date-fns';
+import * as Notifications from 'expo-notifications';
+import { pushCalendarNotificationsAsync } from './notifications'; 
+
 
 const format = (date = new Date()) => dateFns.format(date, 'YYYY-MM-DD');
 const getMarkedDates = (baseDate, appointments) => {
@@ -15,6 +18,13 @@ const getMarkedDates = (baseDate, appointments) => {
       ...markedDates[formattedDate],
       marked: true,
     };
+
+    const curr_date = new Date()
+
+    if (curr_date.toISOString().substring(0,10) == appointment.date.substring(0,10)){
+      pushCalendarNotificationsAsync(appointment)
+    }
+    
   });
 
   return markedDates;
@@ -35,6 +45,10 @@ export default () => {
       date: '2023-04-15T05:00:00.000Z',
       title: "It's a future thing!",
     },
+    {
+      date: '2023-03-25T05:00:00.000Z',
+      title: "CS 2200 Exam",
+    }
   ];
 
   return (
