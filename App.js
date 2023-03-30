@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import { Calendar, CalendarList } from 'react-native-calendars';
 import dateFns from 'date-fns';
 import * as Notifications from 'expo-notifications';
 import { pushCalendarNotificationsAsync } from './notifications'; 
+import { useState } from 'react';
 
 
 const format = (date = new Date()) => dateFns.format(date, 'YYYY-MM-DD');
@@ -31,32 +32,61 @@ const getMarkedDates = (baseDate, appointments) => {
 };
 
 export default () => {
-  const baseDate = new Date(2023, 2, 22);
+  const [enteredGoalText, setEnteredGoalText] = useState('');
+
+  function goalInputHandler(textEntered) {
+    setEnteredGoalText(textEntered)
+  }
+
+  function addEventHandler() {
+    APPOINTMENTS[APPOINTMENTS.length - 1].date = selectedDate
+    APPOINTMENTS[APPOINTMENTS.length - 1].title = enteredGoalText
+  }
+  var selectedDate
+  const baseDate = '2023-03-30'
   const APPOINTMENTS = [
     {
-      date: '2023-03-13T05:00:00.000Z',
+      date: '2023-03-13',
       title: "It's a past thing!",
     },
     {
-      date: '2023-03-22T05:00:00.000Z',
+      date: '2023-03-22',
       title: "It's a today thing!",
     },
     {
-      date: '2023-04-15T05:00:00.000Z',
+      date: '2023-04-15',
       title: "It's a future thing!",
     },
     {
-      date: '2023-03-25T05:00:00.000Z',
+      date: '2024-03-25',
       title: "CS 2200 Exam",
     }
   ];
-
+  /*
+  function day() {
+    var i = 0;
+    while(i < APPOINTMENTS.length) {
+      if (day.dateString === APPOINTMENTS[i].date){
+        console.log(APPOINTMENTS[i].title)
+        show = i
+      }
+      i++
+    }
+  }  
+  */
   return (
     <View style={styles.container}>
       <Calendar
         current={baseDate}
         onDayPress={(day) => {
-          console.log('selected day', day);
+          selectedDate = day.dateString
+          var i = 0;
+          while(i < APPOINTMENTS.length) {
+            if (day.dateString === APPOINTMENTS[i].date){
+              console.log(APPOINTMENTS[i].title)
+            }
+            i++
+          }
         }}
         markedDates={getMarkedDates(baseDate, APPOINTMENTS)}
         theme={{
@@ -76,6 +106,16 @@ export default () => {
           arrowColor: '#DBE9EE',
         }}
       />
+      <TextInput 
+        placeholder = 'Event'
+        onChangeText = {goalInputHandler}
+        value = {enteredGoalText}>
+      </TextInput>
+      <Button
+        color='#578580'
+        title = "Add Event"
+        onPress={addEventHandler}
+      ></Button>
     </View>
   );
 };
