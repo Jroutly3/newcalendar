@@ -77,7 +77,7 @@ export default () => {
   return (
     <View style={styles.container}>
       <Calendar
-        current={baseDate}
+        current={baseDate} 
         onDayPress={(day) => {
           selectedDate = day.dateString
           var i = 0;
